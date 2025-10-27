@@ -43,6 +43,7 @@ module.exports = async (req, res) => {
   try {
     const resp = await fetch(BLOG_LIST_URL, { headers: { "user-agent": "trident-rss/1.0" } });
     if (!resp.ok) return res.status(502).send("Upstream blog fetch failed");
+
     const html = await resp.text();
     const $ = cheerio.load(html);
 
@@ -66,6 +67,7 @@ module.exports = async (req, res) => {
 
     const limited = items.slice(0, 15);
 
+    // Enrich with pubDate (best-effort)
     let i = 0;
     const concurrency = 5;
     async function worker() {
